@@ -102,6 +102,19 @@ void command_pack_create(command_packet *pkt, uint8_t blink_count, uint8_t led_m
 bool command_pack_unpack(const command_packet *pkt, uint8_t *blink_count, uint8_t *led_mask)
 {
     /* 在此实现 */
+    uint16_t header_word = (uint16_t)((pkt->header[0] << 8) | pkt->header[1]);
+    if (header_word != HEADER_WORD)
+    {
+        return false;
+    }
+    uint8_t checksum = PACKET_CHECKSUM(pkt->header[0],pkt->header[1],pkt->cmd);
+    if (checksum != pkt->checksum)
+    {
+        return false;
+    }
+    *blink_count = (uint8_t)((pkt->cmd >> CMD_BLINK_SHIFT) & CMD_LED_MASK);
+    *led_mask = (uint8_t)(pkt->cmd & CMD_LED_MASK);
+    return true;
 }
 
 /* ================================================================
