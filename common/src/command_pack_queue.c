@@ -82,6 +82,10 @@ bool packet_queue_is_full(const packet_queue *q)
 void command_pack_create(command_packet *pkt, uint8_t blink_count, uint8_t led_mask)
 {
     /* 在此实现 */
+    pkt->header[0] = (uint8_t)((HEADER_WORD >> 8) & 0xFF);
+    pkt->header[1] = (uint8_t)(HEADER_WORD & 0xFF);
+    pkt->cmd = (uint8_t)((((blink_count & 0x0F) << CMD_BLINK_SHIFT) | (led_mask & CMD_LED_MASK)));
+    pkt->checksum = PACKET_CHECKSUM(pkt->header[0], pkt->header[1], pkt->cmd);
 }
 
 /* ================================================================
