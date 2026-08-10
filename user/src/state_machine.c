@@ -43,7 +43,7 @@ static void state_running_run(void)
 
     current_state = STATE_ALARM;
 }
-// 三个led快闪三回
+// 四个led快闪三回
 static void state_alarm_run(void)
 {
     uint8_t i;
